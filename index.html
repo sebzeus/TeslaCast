@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeslaCast</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0C0C12;
+      --card:    rgba(255,255,255,0.055);
+      --border:  rgba(255,255,255,0.07);
+      --accent:  #E31937;
+      --white:   #F0F2FF;
+      --muted:   rgba(240,242,255,0.4);
+      --r:       20px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70%;
+      height: 50%;
+      background: radial-gradient(ellipse, rgba(227,25,55,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .app {
+      position: relative;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: 60px 1fr 44px;
+      padding: 0 24px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: 0.18em;
+    }
+    .logo span { color: var(--accent); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #clock {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .greeting {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .greeting strong { color: var(--white); font-weight: 500; }
+
+    /* ── GRID ── */
+    main {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 14px;
+      padding: 16px 0;
+    }
+
+    .tile {
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+      transition: transform 0.12s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tile:hover  { transform: scale(1.015); border-color: rgba(255,255,255,0.15); }
+    .tile:active { transform: scale(0.98); }
+
+    /* Color fills */
+    .tile-yt     { background: linear-gradient(135deg, #C00 0%, #FF3333 100%); }
+    .tile-live   { background: linear-gradient(135deg, #0050CC 0%, #3B82F6 100%); }
+    .tile-iptv   { background: linear-gradient(135deg, #0A6B4B 0%, #10B981 100%); }
+    .tile-radio  { background: linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%); }
+    .tile-twitch { background: linear-gradient(135deg, #4B0082 0%, #9146FF 100%); }
+    .tile-plex   { background: linear-gradient(135deg, #B45309 0%, #F59E0B 100%); }
+
+    /* Ambient shine */
+    .tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .tile-icon {
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tile-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+      line-height: 1.2;
+    }
+
+    .tile-desc {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      margin-top: 3px;
+      position: relative;
+      z-index: 1;
+      font-weight: 300;
+    }
+
+    /* Badge "Bientôt" */
+    .badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.35);
+      border-radius: 100px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 3px 9px;
+      text-transform: uppercase;
+      z-index: 1;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-note {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .drive-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px 5px 8px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .drive-toggle.active { border-color: var(--accent); }
+
+    .drive-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+    .drive-toggle.active .drive-dot {
+      background: var(--accent);
+      box-shadow: 0 0 7px var(--accent);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    .drive-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.3s;
+    }
+    .drive-toggle.active .drive-label { color: var(--accent); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="logo">TESLA<span>CAST</span></div>
+    <div class="header-right">
+      <div class="greeting">Bonjour, <strong>Sébastien</strong> — regardez tout, même en roulant</div>
+      <div id="clock">--:--</div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- YouTube -->
+    <div class="tile tile-yt" onclick="go('https://www.youtube.com')">
+      <div class="tile-icon">▶</div>
+      <div class="tile-name">YouTube</div>
+      <div class="tile-desc">Tendances &amp; recherche vidéo</div>
+    </div>
+
+    <!-- TV Live -->
+    <div class="tile tile-live" onclick="go('https://www.tf1.fr/tf1/direct')">
+      <div class="tile-icon">📡</div>
+      <div class="tile-name">TV Live</div>
+      <div class="tile-desc">Chaînes en direct par pays</div>
+    </div>
+
+    <!-- Mon IPTV -->
+    <div class="tile tile-iptv" onclick="showSoon('IPTV')">
+      <div class="badge">Bientôt</div>
+      <div class="tile-icon">📺</div>
+      <div class="tile-name">Mon IPTV</div>
+      <div class="tile-desc">Votre abonnement IPTV</div>
+    </div>
+
+    <!-- Radio -->
+    <div class="tile tile-radio" onclick="go('https://www.radio.fr')">
+      <div class="tile-icon">📻</div>
+      <div class="tile-name">Radio</div>
+      <div class="tile-desc">Milliers de stations en direct</div>
+    </div>
+
+    <!-- Twitch -->
+    <div class="tile tile-twitch" onclick="go('https://www.twitch.tv')">
+      <div class="tile-icon">🎮</div>
+      <div class="tile-name">Twitch</div>
+      <div class="tile-desc">Live gaming &amp; streaming</div>
+    </div>
+
+    <!-- Plex -->
+    <div class="tile tile-plex" onclick="go('https://app.plex.tv/desktop')">
+      <div class="tile-icon">🟠</div>
+      <div class="tile-name">Ma bibliothèque</div>
+      <div class="tile-desc">Films, séries &amp; perso</div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-note">Connecté en tant que <strong>Sébastien</strong> · TeslaCast v1</div>
+    <div class="drive-toggle" id="driveToggle" onclick="toggleDrive()">
+      <div class="drive-dot"></div>
+      <span class="drive-label">Mode conduite</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Clock
+  function tick() {
+    const n = new Date();
+    document.getElementById('clock').textContent =
+      String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 10000);
+
+  // Navigate (same tab — back button returns to TeslaCast)
+  function go(url) { window.location.href = url; }
+
+  function showSoon(name) {
+    alert(name + ' — bientôt disponible !');
+  }
+
+  // Drive mode (visuel uniquement pour l'instant)
+  let drive = false;
+  function toggleDrive() {
+    drive = !drive;
+    document.getElementById('driveToggle').classList.toggle('active', drive);
+  }
+</script>
+</body>
+</html>
