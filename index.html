@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg:     #0C0C12;
       --card:   rgba(255,255,255,0.055);
@@ -17,32 +16,17 @@
       --muted:  rgba(240,242,255,0.4);
       --r:      20px;
     }
-
-    html, body {
-      height: 100%; background: var(--bg);
-      color: var(--white); font-family: 'Inter', sans-serif;
-      overflow: hidden;
-    }
-
+    html, body { height: 100%; background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; overflow: hidden; }
     body::before {
-      content: ''; position: fixed;
-      top: -20%; left: 50%; transform: translateX(-50%);
+      content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
       width: 70%; height: 50%;
       background: radial-gradient(ellipse, rgba(227,25,55,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
+    .app { position: relative; height: 100vh; display: grid; grid-template-rows: 60px 1fr 44px; padding: 0 24px; }
 
-    .app {
-      position: relative; height: 100vh;
-      display: grid; grid-template-rows: 60px 1fr 44px;
-      padding: 0 24px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
+    /* HEADER */
+    header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
     .logo { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1rem; letter-spacing: 0.18em; }
     .logo span { color: var(--accent); }
     .header-right { display: flex; align-items: center; gap: 20px; }
@@ -50,174 +34,108 @@
     .greeting { font-size: 0.8rem; color: var(--muted); }
     .greeting strong { color: var(--white); font-weight: 500; }
 
-    /* ── SCREENS ── */
+    /* SCREENS */
     .screen { display: none; flex-direction: column; height: 100%; }
     .screen.active { display: flex; }
 
-    /* ── HOME GRID ── */
+    /* HOME GRID */
     #home main {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
       gap: 14px; padding: 16px 0;
     }
-
     .tile {
-      border-radius: var(--r); border: 1px solid var(--border);
-      cursor: pointer; position: relative; overflow: hidden;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 20px;
-      transition: transform 0.12s, border-color 0.15s;
-      -webkit-tap-highlight-color: transparent;
+      border-radius: var(--r); border: 1px solid var(--border); cursor: pointer;
+      position: relative; overflow: hidden; display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 20px;
+      transition: transform 0.12s, border-color 0.15s; -webkit-tap-highlight-color: transparent;
     }
     .tile:hover  { transform: scale(1.015); border-color: rgba(255,255,255,0.15); }
     .tile:active { transform: scale(0.98); }
     .tile::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
-      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%); pointer-events: none;
     }
-
     .tile-yt     { background: linear-gradient(135deg, #C00 0%, #FF3333 100%); }
     .tile-live   { background: linear-gradient(135deg, #0050CC 0%, #3B82F6 100%); }
     .tile-iptv   { background: linear-gradient(135deg, #0A6B4B 0%, #10B981 100%); }
     .tile-radio  { background: linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%); }
     .tile-twitch { background: linear-gradient(135deg, #4B0082 0%, #9146FF 100%); }
     .tile-plex   { background: linear-gradient(135deg, #B45309 0%, #F59E0B 100%); }
-
     .tile-icon { font-size: 2.4rem; margin-bottom: 10px; line-height: 1; position: relative; z-index: 1; }
     .tile-name { font-size: 1.05rem; font-weight: 600; position: relative; z-index: 1; line-height: 1.2; }
     .tile-desc { font-size: 0.72rem; opacity: 0.75; margin-top: 3px; position: relative; z-index: 1; font-weight: 300; }
-
     .badge {
-      position: absolute; top: 14px; right: 14px;
-      background: rgba(0,0,0,0.35); border-radius: 100px;
-      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.06em;
+      position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.35);
+      border-radius: 100px; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.06em;
       padding: 3px 9px; text-transform: uppercase; z-index: 1;
     }
 
-    /* ── PLAYER SCREEN ── */
-    #player {
-      padding: 16px 0;
-      gap: 12px;
-    }
-
-    .player-header {
-      display: flex; align-items: center; gap: 14px; flex-shrink: 0;
-    }
-
+    /* PLAYER SCREEN */
+    #player { padding: 16px 0; gap: 12px; }
+    .player-header { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
     .back-btn {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 100px; color: var(--white);
-      font-size: 0.8rem; font-weight: 500;
-      padding: 8px 18px; cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap; flex-shrink: 0;
+      background: var(--card); border: 1px solid var(--border); border-radius: 100px;
+      color: var(--white); font-size: 0.8rem; font-weight: 500; padding: 8px 18px;
+      cursor: pointer; transition: background 0.15s; white-space: nowrap; flex-shrink: 0;
     }
     .back-btn:hover { background: rgba(255,255,255,0.1); }
-
-    .search-wrap {
-      flex: 1; position: relative;
-    }
-    .search-wrap svg {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      opacity: 0.35; pointer-events: none;
-    }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: 0.35; pointer-events: none; }
     #yt-search {
-      width: 100%; background: var(--card);
-      border: 1px solid var(--border); border-radius: 100px;
-      color: var(--white); font-family: 'Inter', sans-serif;
-      font-size: 0.9rem; padding: 10px 18px 10px 42px; outline: none;
-      transition: border-color 0.2s;
+      width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 100px;
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.9rem;
+      padding: 10px 18px 10px 42px; outline: none; transition: border-color 0.2s;
     }
     #yt-search:focus { border-color: rgba(227,25,55,0.5); }
     #yt-search::placeholder { color: var(--muted); }
-
     .play-btn {
-      background: var(--accent); border: none; border-radius: 100px;
-      color: white; font-family: 'Inter', sans-serif;
-      font-size: 0.85rem; font-weight: 600;
-      padding: 10px 22px; cursor: pointer;
-      transition: opacity 0.2s; white-space: nowrap; flex-shrink: 0;
+      background: var(--accent); border: none; border-radius: 100px; color: white;
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600;
+      padding: 10px 22px; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; flex-shrink: 0;
     }
     .play-btn:hover { opacity: 0.85; }
 
-    /* Drive toggle in player */
+    /* Drive toggle */
     .drive-toggle {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 100px; padding: 8px 16px 8px 10px;
-      cursor: pointer; transition: border-color 0.2s; flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px; background: var(--card);
+      border: 2px solid var(--border); border-radius: 100px; padding: 8px 16px 8px 10px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s; flex-shrink: 0;
     }
-    .drive-toggle.active { border-color: var(--accent); }
-    .drive-dot {
-      width: 9px; height: 9px; border-radius: 50%;
-      background: var(--muted); transition: background 0.3s; flex-shrink: 0;
-    }
-    .drive-toggle.active .drive-dot {
-      background: var(--accent); box-shadow: 0 0 7px var(--accent);
-      animation: blink 1.5s infinite;
-    }
+    .drive-toggle.active { border-color: var(--accent); background: rgba(227,25,55,0.1); }
+    .drive-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); transition: background 0.3s; flex-shrink: 0; }
+    .drive-toggle.active .drive-dot { background: var(--accent); box-shadow: 0 0 7px var(--accent); animation: blink 1.5s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
-    .drive-label {
-      font-size: 0.72rem; font-weight: 500;
-      letter-spacing: 0.07em; text-transform: uppercase;
-      color: var(--muted); transition: color 0.3s;
-    }
+    .drive-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); transition: color 0.3s; }
     .drive-toggle.active .drive-label { color: var(--accent); }
 
     /* Player box */
-    .player-box {
-      flex: 1; position: relative;
-      background: #000; border-radius: var(--r);
-      border: 1px solid var(--border); overflow: hidden;
-      min-height: 0;
-    }
-
-    #yt-frame {
-      width: 100%; height: 100%; border: none; display: block;
-    }
-
-    /* Placeholder */
+    .player-box { flex: 1; position: relative; background: #000; border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; min-height: 0; }
+    #yt-frame { width: 100%; height: 100%; border: none; display: block; }
     .player-placeholder {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 14px; color: var(--muted);
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px; color: var(--muted);
     }
     .player-placeholder svg { opacity: 0.2; }
     .player-placeholder p { font-size: 0.82rem; text-align: center; max-width: 260px; line-height: 1.6; }
     .player-placeholder small { font-size: 0.7rem; opacity: 0.6; }
 
-    /* Drive overlay */
-    .drive-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0.94);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 12px;
-      z-index: 10; opacity: 0; pointer-events: none;
-      transition: opacity 0.35s;
+    /* Drive mode indicator banner */
+    .drive-banner {
+      display: none; align-items: center; justify-content: center; gap: 10px;
+      background: rgba(227,25,55,0.12); border: 1px solid rgba(227,25,55,0.3);
+      border-radius: 10px; padding: 8px 16px; flex-shrink: 0;
+      font-size: 0.75rem; color: var(--accent); font-weight: 500; letter-spacing: 0.05em;
     }
-    .drive-overlay.on { opacity: 1; pointer-events: auto; }
-    .drive-overlay .ov-icon { font-size: 2.5rem; opacity: 0.3; }
-    .drive-overlay strong {
-      font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
-      letter-spacing: 0.08em; color: var(--white);
-    }
-    .drive-overlay p { font-size: 0.78rem; color: var(--muted); text-align: center; max-width: 220px; line-height: 1.6; }
+    .drive-banner.visible { display: flex; }
+    .drive-banner-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: blink 1s infinite; }
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .footer-note { font-size: 0.68rem; color: var(--muted); }
   </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- HEADER (commun) -->
   <header>
     <div class="logo">TESLA<span>CAST</span></div>
     <div class="header-right">
@@ -226,7 +144,7 @@
     </div>
   </header>
 
-  <!-- ── SCREEN HOME ── -->
+  <!-- HOME -->
   <div class="screen active" id="home">
     <main>
       <div class="tile tile-yt" onclick="showPlayer()">
@@ -267,60 +185,48 @@
     </main>
   </div>
 
-  <!-- ── SCREEN PLAYER ── -->
+  <!-- PLAYER -->
   <div class="screen" id="player">
-
     <div class="player-header">
       <button class="back-btn" onclick="showHome()">← Accueil</button>
-
       <div class="search-wrap">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" id="yt-search" placeholder="Colle une URL YouTube ou un ID vidéo…"
-          onkeydown="if(event.key==='Enter') loadVideo()">
+        <input type="text" id="yt-search" placeholder="URL YouTube ou ID vidéo…" onkeydown="if(event.key==='Enter') loadVideo()">
       </div>
-
       <button class="play-btn" onclick="loadVideo()">▶ Lancer</button>
-
       <div class="drive-toggle" id="driveToggle" onclick="toggleDrive()">
         <div class="drive-dot"></div>
-        <span class="drive-label">Conduite</span>
+        <span class="drive-label">Mode conduite</span>
       </div>
     </div>
 
+    <div class="drive-banner" id="driveBanner">
+      <div class="drive-banner-dot"></div>
+      Mode conduite actif — lecture maintenue en roulant
+    </div>
+
     <div class="player-box">
-      <!-- Placeholder -->
       <div class="player-placeholder" id="placeholder">
         <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
           <circle cx="12" cy="12" r="10"/>
           <polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/>
         </svg>
-        <p>Collez une URL YouTube ou un ID vidéo et appuyez sur Lancer</p>
+        <p>Collez une URL YouTube et appuyez sur Lancer</p>
         <small>Ex : https://youtu.be/dQw4w9WgXcQ</small>
       </div>
-
-      <!-- iFrame -->
       <iframe id="yt-frame" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
-
-      <!-- Overlay conduite -->
-      <div class="drive-overlay" id="driveOverlay">
-        <div class="ov-icon">🎵</div>
-        <strong>Audio en cours</strong>
-        <p>La vidéo est masquée pendant la conduite. L'audio continue.</p>
-      </div>
     </div>
-
   </div>
 
   <footer>
-    <div class="footer-note">TeslaCast · GitHub Pages</div>
+    <div class="footer-note">TeslaCast · v1.0</div>
   </footer>
-
 </div>
 
 <script>
-  // Clock
+  // ── Clock ──
   function tick() {
     const n = new Date();
     document.getElementById('clock').textContent =
@@ -328,7 +234,7 @@
   }
   tick(); setInterval(tick, 10000);
 
-  // Screen switching
+  // ── Screen switching ──
   function showPlayer() {
     document.getElementById('home').classList.remove('active');
     document.getElementById('player').classList.add('active');
@@ -336,27 +242,20 @@
   function showHome() {
     document.getElementById('player').classList.remove('active');
     document.getElementById('home').classList.add('active');
-    // Stop video
     document.getElementById('yt-frame').src = '';
     document.getElementById('placeholder').style.display = 'flex';
-    driveMode = false;
-    document.getElementById('driveToggle').classList.remove('active');
-    document.getElementById('driveOverlay').classList.remove('on');
+    if (driveMode) toggleDrive(); // reset drive mode
   }
 
-  // Load video
+  // ── Video loading ──
   function extractId(input) {
     const patterns = [
       /(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/,
       /^([A-Za-z0-9_-]{11})$/
     ];
-    for (const p of patterns) {
-      const m = input.match(p);
-      if (m) return m[1];
-    }
+    for (const p of patterns) { const m = input.match(p); if (m) return m[1]; }
     return null;
   }
-
   function loadVideo() {
     const val = document.getElementById('yt-search').value.trim();
     if (!val) return;
@@ -365,16 +264,76 @@
     const frame = document.getElementById('yt-frame');
     frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0';
     document.getElementById('placeholder').style.display = 'none';
-    if (driveMode) document.getElementById('driveOverlay').classList.add('on');
   }
 
-  // Drive mode
+  // ── Drive mode — Page Visibility API spoof ──
   let driveMode = false;
+
   function toggleDrive() {
     driveMode = !driveMode;
     document.getElementById('driveToggle').classList.toggle('active', driveMode);
-    const hasVideo = document.getElementById('yt-frame').src !== '';
-    document.getElementById('driveOverlay').classList.toggle('on', driveMode && hasVideo);
+    document.getElementById('driveBanner').classList.toggle('visible', driveMode);
+
+    if (driveMode) {
+      enableDriveMode();
+    } else {
+      disableDriveMode();
+    }
+  }
+
+  function enableDriveMode() {
+    // 1. Forcer document.hidden à toujours retourner false
+    Object.defineProperty(document, 'hidden', {
+      get: function() { return false; },
+      configurable: true
+    });
+
+    // 2. Forcer document.visibilityState à toujours retourner "visible"
+    Object.defineProperty(document, 'visibilityState', {
+      get: function() { return 'visible'; },
+      configurable: true
+    });
+
+    // 3. Bloquer tous les événements visibilitychange
+    document._origAddEventListener = document.addEventListener;
+    document.addEventListener = function(type, listener, options) {
+      if (type === 'visibilitychange') return; // bloquer
+      return document._origAddEventListener.call(this, type, listener, options);
+    };
+
+    // 4. Supprimer les listeners visibilitychange déjà enregistrés sur le document
+    // (pour l'iframe YouTube, on recharge avec paramètre supplémentaire)
+    reloadFrameWithDriveMode();
+  }
+
+  function disableDriveMode() {
+    // Restaurer les propriétés natives
+    try {
+      Object.defineProperty(document, 'hidden', {
+        get: function() {
+          return document.visibilityState === 'hidden';
+        },
+        configurable: true
+      });
+      Object.defineProperty(document, 'visibilityState', {
+        configurable: true,
+        get: undefined // revert to native
+      });
+    } catch(e) {}
+
+    if (document._origAddEventListener) {
+      document.addEventListener = document._origAddEventListener;
+    }
+  }
+
+  function reloadFrameWithDriveMode() {
+    const frame = document.getElementById('yt-frame');
+    if (frame.src && frame.src !== '') {
+      // Recharger l'iframe pour que le spoof soit actif dès le départ
+      const currentSrc = frame.src;
+      frame.src = '';
+      setTimeout(() => { frame.src = currentSrc; }, 100);
+    }
   }
 </script>
 </body>
