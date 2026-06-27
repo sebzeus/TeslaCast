@@ -8,279 +8,284 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: #0A0A0F; color: #F0F2FF;
-      font-family: 'Courier New', monospace; font-size: 13px;
-      display: grid; grid-template-rows: 50px 1fr; height: 100vh; overflow: hidden;
+      font-family: 'Courier New', monospace;
+      height: 100vh; display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
     }
+
+    /* HEADER */
     header {
+      background: #111; border-bottom: 2px solid #E31937;
+      padding: 12px 20px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
     }
-    header h1 { font-size: 0.85rem; letter-spacing: 0.15em; color: #E31937; }
-    .controls { display: flex; gap: 8px; }
-    button {
-      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
-      color: #F0F2FF; border-radius: 6px; padding: 5px 12px; cursor: pointer;
-      font-family: monospace; font-size: 0.75rem; transition: background 0.15s;
+    header h1 { font-size: 1.1rem; color: #E31937; letter-spacing: 0.1em; }
+    #clock { font-size: 1rem; color: rgba(255,255,255,0.4); }
+
+    /* MAIN — 2 colonnes */
+    .main {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; overflow: hidden;
     }
-    button:hover { background: rgba(255,255,255,0.12); }
-    button.red { border-color: rgba(227,25,55,0.5); color: #E31937; }
 
-    .main { display: grid; grid-template-columns: 1fr 260px; overflow: hidden; }
+    /* COLONNE GAUCHE — vidéo + états */
+    .left {
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 16px; display: flex; flex-direction: column; gap: 14px;
+    }
 
-    /* LOG */
+    video {
+      width: 100%; aspect-ratio: 16/9;
+      background: #000; border-radius: 10px;
+      border: 3px solid #333;
+    }
+    video.playing { border-color: #10B981; }
+    video.paused  { border-color: #E31937; }
+
+    .big-status {
+      text-align: center; font-size: 2rem; font-weight: bold;
+      padding: 16px; border-radius: 12px; letter-spacing: 0.05em;
+    }
+    .big-status.playing { background: rgba(16,185,129,0.2); color: #10B981; }
+    .big-status.paused  { background: rgba(227,25,55,0.2);  color: #E31937; }
+
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px 14px;
+    }
+    .stat-box .label { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+    .stat-box .value { font-size: 1.1rem; font-weight: bold; }
+    .value.green  { color: #10B981; }
+    .value.red    { color: #E31937; }
+    .value.yellow { color: #F59E0B; }
+
+    /* COLONNE DROITE — log */
+    .right {
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .log-title {
+      padding: 10px 16px; font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0;
+    }
     #log {
-      overflow-y: auto; padding: 10px;
-      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+      flex: 1; overflow-y: auto; padding: 10px;
+      scrollbar-width: thin;
     }
     .entry {
-      display: grid; grid-template-columns: 70px 140px 1fr;
-      gap: 8px; padding: 4px 6px; border-radius: 4px; margin-bottom: 2px;
-      border-left: 2px solid transparent;
+      display: flex; gap: 10px; align-items: baseline;
+      padding: 5px 6px; border-radius: 6px; margin-bottom: 3px;
+      border-left: 3px solid transparent;
     }
-    .entry:hover { background: rgba(255,255,255,0.03); }
-    .entry.visibility  { border-color: #E31937; }
-    .entry.media       { border-color: #3B82F6; }
-    .entry.focus       { border-color: #10B981; }
-    .entry.network     { border-color: #8B5CF6; }
-    .entry.page        { border-color: #F59E0B; }
-    .entry.info        { border-color: rgba(255,255,255,0.2); }
-
-    .ts   { color: rgba(240,242,255,0.35); font-size: 0.7rem; }
-    .tag  { font-size: 0.7rem; font-weight: bold; padding: 1px 5px; border-radius: 3px; text-align: center; align-self: start; }
-    .tag.visibility { background: rgba(227,25,55,0.2);  color: #E31937; }
-    .tag.media      { background: rgba(59,130,246,0.2); color: #3B82F6; }
-    .tag.focus      { background: rgba(16,185,129,0.2); color: #10B981; }
-    .tag.network    { background: rgba(139,92,246,0.2); color: #8B5CF6; }
-    .tag.page       { background: rgba(245,158,11,0.2); color: #F59E0B; }
-    .tag.info       { background: rgba(255,255,255,0.08); color: rgba(240,242,255,0.5); }
-    .msg { color: #F0F2FF; word-break: break-all; line-height: 1.4; }
-    .msg .val { color: #FFD700; }
-    .msg .bad { color: #E31937; font-weight: bold; }
-    .msg .good { color: #10B981; font-weight: bold; }
-
-    /* SIDEBAR */
-    .sidebar {
-      border-left: 1px solid rgba(255,255,255,0.08);
-      padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+    .entry.media      { border-color: #3B82F6; }
+    .entry.visibility { border-color: #E31937; }
+    .entry.focus      { border-color: #10B981; }
+    .entry.recover    { border-color: #F59E0B; }
+    .entry.info       { border-color: #555; }
+    .ets  { font-size: 0.7rem; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+    .etag {
+      font-size: 0.68rem; font-weight: bold; flex-shrink: 0;
+      padding: 1px 6px; border-radius: 4px; min-width: 80px; text-align: center;
     }
-    .card {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px; padding: 12px;
+    .etag.media      { background: rgba(59,130,246,0.2);  color: #3B82F6; }
+    .etag.visibility { background: rgba(227,25,55,0.2);   color: #E31937; }
+    .etag.focus      { background: rgba(16,185,129,0.2);  color: #10B981; }
+    .etag.recover    { background: rgba(245,158,11,0.2);  color: #F59E0B; }
+    .etag.info       { background: rgba(255,255,255,0.07); color: #888; }
+    .emsg { font-size: 0.82rem; line-height: 1.4; }
+    .bad  { color: #E31937; font-weight: bold; }
+    .good { color: #10B981; font-weight: bold; }
+    .val  { color: #FFD700; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 16px; display: flex; gap: 10px; align-items: center;
+      background: #111;
     }
-    .card-title { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240,242,255,0.4); margin-bottom: 8px; }
-    .stat { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .stat-label { font-size: 0.72rem; color: rgba(240,242,255,0.55); }
-    .stat-value { font-size: 0.8rem; font-weight: bold; }
-    .stat-value.red { color: #E31937; }
-    .stat-value.green { color: #10B981; }
-    .stat-value.yellow { color: #F59E0B; }
-
-    .video-test { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; margin-bottom: 8px; }
-    .video-status { font-size: 0.7rem; text-align: center; color: rgba(240,242,255,0.4); }
-
-    .ua { font-size: 0.6rem; color: rgba(240,242,255,0.3); line-height: 1.5; word-break: break-all; }
+    .recover-toggle {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.4);
+      border-radius: 8px; padding: 6px 14px; cursor: pointer;
+      font-size: 0.8rem; color: #10B981;
+    }
+    .recover-toggle.off { background: rgba(227,25,55,0.1); border-color: rgba(227,25,55,0.4); color: #E31937; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .recover-count { font-size: 0.8rem; color: #F59E0B; margin-left: auto; }
+    .clear-btn {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: #aaa; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 0.8rem;
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>⬡ TESLACAST DEBUG</h1>
-  <div class="controls">
-    <button onclick="clearLog()">Effacer</button>
-    <button onclick="copyLog()">Copier logs</button>
-    <button class="red" onclick="exportLog()">Exporter JSON</button>
-  </div>
+  <h1>⬡ TESLACAST DEBUG v2</h1>
+  <div id="clock">--:--:--</div>
 </header>
 
 <div class="main">
 
-  <!-- LOG FEED -->
-  <div id="log"></div>
+  <!-- GAUCHE -->
+  <div class="left">
+    <video id="vid" autoplay muted loop
+      src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
+    <div class="big-status playing" id="bigStatus">▶ EN LECTURE</div>
 
-    <div class="card">
-      <div class="card-title">État en temps réel</div>
-      <div class="stat"><span class="stat-label">document.hidden</span><span class="stat-value" id="s-hidden">—</span></div>
-      <div class="stat"><span class="stat-label">visibilityState</span><span class="stat-value" id="s-vis">—</span></div>
-      <div class="stat"><span class="stat-label">document.hasFocus</span><span class="stat-value" id="s-focus">—</span></div>
-      <div class="stat"><span class="stat-label">navigator.onLine</span><span class="stat-value" id="s-online">—</span></div>
-      <div class="stat"><span class="stat-label">Events capturés</span><span class="stat-value yellow" id="s-count">0</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Test vidéo intégré</div>
-      <video class="video-test" id="test-video" controls autoplay muted loop
-        src="https://www.w3schools.com/html/mov_bbb.mp4">
-      </video>
-      <div class="video-status" id="video-status">En attente…</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">User Agent Tesla</div>
-      <div class="ua" id="ua-display"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Instructions</div>
-      <div style="font-size:0.68rem; color:rgba(240,242,255,0.5); line-height:1.7;">
-        1. Ouvre cette page sur ta Tesla<br>
-        2. Lance la vidéo test<br>
-        3. Passe en <strong style="color:#F0F2FF">Drive</strong><br>
-        4. Observe les logs en temps réel<br>
-        5. Repasse en <strong style="color:#F0F2FF">Park</strong><br>
-        6. <strong style="color:#E31937">Exporte le JSON</strong> et envoie-le moi
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="label">document.hidden</div>
+        <div class="value green" id="sHidden">false</div>
+      </div>
+      <div class="stat-box">
+        <div class="label">visibilityState</div>
+        <div class="value green" id="sVis">visible</div>
+      </div>
+      <div class="stat-box">
+        <div class="label">hasFocus</div>
+        <div class="value green" id="sFocus">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="label">currentTime</div>
+        <div class="value yellow" id="sTime">0.00s</div>
       </div>
     </div>
-
   </div>
+
+  <!-- DROITE -->
+  <div class="right">
+    <div class="log-title">Événements en temps réel</div>
+    <div id="log"></div>
+  </div>
+
 </div>
 
+<footer>
+  <div class="recover-toggle" id="recoverToggle" onclick="toggleRecover()">
+    <div class="dot"></div>
+    Reprise auto ON
+  </div>
+  <button class="clear-btn" onclick="clearLog()">Effacer</button>
+  <div class="recover-count" id="recoverCount">0 reprise(s)</div>
+</footer>
+
 <script>
-  const logEl = document.getElementById('log');
-  let eventCount = 0;
-  let allLogs = [];
+  const vid = document.getElementById('vid');
+  let autoRecover = true;
+  let recovering = false;
+  let recoveries = 0;
+  let logs = [];
+
+  // Clock
+  setInterval(() => {
+    const n = new Date();
+    document.getElementById('clock').textContent =
+      [n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+  }, 500);
 
   function ts() {
     const n = new Date();
-    return String(n.getHours()).padStart(2,'0') + ':' +
-           String(n.getMinutes()).padStart(2,'0') + ':' +
-           String(n.getSeconds()).padStart(2,'0') + '.' +
-           String(n.getMilliseconds()).padStart(3,'0');
+    return [n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')
+      + '.' + String(n.getMilliseconds()).padStart(3,'0');
   }
 
-  function log(category, label, message, data) {
-    eventCount++;
-    document.getElementById('s-count').textContent = eventCount;
-
-    const entry = { t: ts(), category, label, message, data: data || null };
-    allLogs.push(entry);
-
-    const div = document.createElement('div');
-    div.className = 'entry ' + category;
-    div.innerHTML = `
-      <span class="ts">${entry.t}</span>
-      <span class="tag ${category}">${label}</span>
-      <span class="msg">${message}</span>
-    `;
-    logEl.appendChild(div);
-    logEl.scrollTop = logEl.scrollHeight;
-
-    updateStats();
+  function addLog(cat, label, html) {
+    const t = ts();
+    logs.push({t, cat, label, msg: html.replace(/<[^>]+>/g,'')});
+    const el = document.createElement('div');
+    el.className = 'entry ' + cat;
+    el.innerHTML = `<span class="ets">${t}</span><span class="etag ${cat}">${label}</span><span class="emsg">${html}</span>`;
+    const logEl = document.getElementById('log');
+    logEl.appendChild(el);
+    logEl.scrollTop = 99999;
   }
 
-  function updateStats() {
-    const h = document.hidden;
-    const v = document.visibilityState;
-    const f = document.hasFocus();
-    const o = navigator.onLine;
+  // ── Video events ──
+  vid.addEventListener('pause', () => {
+    addLog('media', 'VIDEO PAUSE', `<span class="bad">⏸ PAUSE</span> à ${vid.currentTime.toFixed(2)}s`);
+    updateVideoUI(true);
+    if (autoRecover && !recovering) {
+      recovering = true;
+      addLog('recover', 'RECOVER', '🔄 Tentative de reprise…');
+      setTimeout(() => {
+        vid.play()
+          .then(() => {
+            recoveries++;
+            document.getElementById('recoverCount').textContent = recoveries + ' reprise(s)';
+            addLog('recover', 'RECOVER', `<span class="good">✅ Reprise OK !</span>`);
+          })
+          .catch(e => addLog('recover', 'RECOVER', `<span class="bad">❌ Échec : ${e.name}</span>`))
+          .finally(() => { recovering = false; });
+      }, 100);
+    }
+  });
 
-    const hEl = document.getElementById('s-hidden');
-    hEl.textContent = String(h);
-    hEl.className = 'stat-value ' + (h ? 'red' : 'green');
+  vid.addEventListener('play',    () => { addLog('media', 'VIDEO PLAY',    '<span class="good">▶ play</span>'); updateVideoUI(false); });
+  vid.addEventListener('playing', () => { addLog('media', 'VIDEO PLAYING', '<span class="good">▶ playing</span>'); updateVideoUI(false); });
+  vid.addEventListener('waiting', () => addLog('media', 'VIDEO WAIT', '<span class="val">⏳ waiting</span>'));
+  vid.addEventListener('stalled', () => addLog('media', 'VIDEO STALL', '<span class="bad">⚠ stalled</span>'));
 
-    const vEl = document.getElementById('s-vis');
-    vEl.textContent = v;
-    vEl.className = 'stat-value ' + (v === 'visible' ? 'green' : 'red');
-
-    const fEl = document.getElementById('s-focus');
-    fEl.textContent = String(f);
-    fEl.className = 'stat-value ' + (f ? 'green' : 'yellow');
-
-    const oEl = document.getElementById('s-online');
-    oEl.textContent = String(o);
-    oEl.className = 'stat-value ' + (o ? 'green' : 'red');
+  function updateVideoUI(paused) {
+    const bs = document.getElementById('bigStatus');
+    const v = document.getElementById('vid');
+    if (paused) {
+      bs.textContent = '⏸ EN PAUSE'; bs.className = 'big-status paused';
+      v.className = 'paused';
+    } else {
+      bs.textContent = '▶ EN LECTURE'; bs.className = 'big-status playing';
+      v.className = 'playing';
+    }
   }
 
-  // ── VISIBILITY ──
+  // ── Visibility events ──
   document.addEventListener('visibilitychange', () => {
-    const h = document.hidden;
-    const v = document.visibilityState;
-    log('visibility', 'VISIBILITY',
-      `hidden=<span class="${h?'bad':'good'}">${h}</span>  visibilityState=<span class="val">"${v}"</span>`
-    );
+    addLog('visibility', 'VISIBILITY',
+      `hidden=<span class="${document.hidden?'bad':'good'}">${document.hidden}</span>  state=<span class="val">"${document.visibilityState}"</span>`);
   });
 
-  // ── FOCUS / BLUR ──
-  window.addEventListener('focus', () => log('focus', 'FOCUS', '<span class="good">window focus</span>'));
-  window.addEventListener('blur',  () => log('focus', 'BLUR',  '<span class="bad">window blur</span>'));
-  document.addEventListener('focus', () => log('focus', 'DOC FOCUS', '<span class="good">document focus</span>'));
-  document.addEventListener('blur',  () => log('focus', 'DOC BLUR',  '<span class="bad">document blur</span>'));
+  // ── Focus events ──
+  window.addEventListener('blur',  () => addLog('focus', 'WIN BLUR',  '<span class="bad">window perdu le focus</span>'));
+  window.addEventListener('focus', () => addLog('focus', 'WIN FOCUS', '<span class="good">window a le focus</span>'));
+  window.addEventListener('freeze',() => addLog('visibility', 'FREEZE', '<span class="bad">❄ PAGE FROZEN</span>'));
+  window.addEventListener('resume',() => addLog('visibility', 'RESUME', '<span class="good">PAGE RESUMED</span>'));
 
-  // ── PAGE LIFECYCLE ──
-  window.addEventListener('pagehide',  (e) => log('page', 'PAGEHIDE',  `persisted=<span class="val">${e.persisted}</span>`));
-  window.addEventListener('pageshow',  (e) => log('page', 'PAGESHOW',  `persisted=<span class="val">${e.persisted}</span>`));
-  window.addEventListener('freeze',    ()  => log('page', 'FREEZE',    '<span class="bad">page frozen</span>'));
-  window.addEventListener('resume',    ()  => log('page', 'RESUME',    '<span class="good">page resumed</span>'));
-  window.addEventListener('beforeunload', () => log('page', 'UNLOAD', '<span class="bad">page unloading</span>'));
-
-  // ── NETWORK ──
-  window.addEventListener('online',  () => log('network', 'ONLINE',  '<span class="good">connexion rétablie</span>'));
-  window.addEventListener('offline', () => log('network', 'OFFLINE', '<span class="bad">connexion perdue</span>'));
-
-  // ── VIDEO TEST ──
-  const vid = document.getElementById('test-video');
-  const vidStatus = document.getElementById('video-status');
-  const videoEvents = ['play','pause','playing','waiting','stalled','suspend','ended','emptied','canplay'];
-  videoEvents.forEach(ev => {
-    vid.addEventListener(ev, () => {
-      const msg = ev === 'pause'   ? `<span class="bad">⏸ pause</span>` :
-                  ev === 'play'    ? `<span class="good">▶ play</span>` :
-                  ev === 'playing' ? `<span class="good">▶ playing</span>` :
-                  ev === 'stalled' ? `<span class="bad">⚠ stalled</span>` :
-                  `<span class="val">${ev}</span>`;
-      log('media', 'VIDEO', msg);
-      vidStatus.textContent = ev.toUpperCase();
-    });
-  });
-
-  // ── POLLING (détection changements d'état non-event) ──
-  let lastHidden = document.hidden;
-  let lastVis = document.visibilityState;
-  let lastFocus = document.hasFocus();
+  // ── Polling 300ms ──
+  let lastH = document.hidden, lastV = document.visibilityState, lastF = document.hasFocus();
   setInterval(() => {
-    const h = document.hidden;
-    const v = document.visibilityState;
-    const f = document.hasFocus();
-    if (h !== lastHidden) {
-      log('visibility', 'POLL∆', `hidden: <span class="val">${lastHidden}</span> → <span class="${h?'bad':'good'}">${h}</span>`);
-      lastHidden = h;
-    }
-    if (v !== lastVis) {
-      log('visibility', 'POLL∆', `visibilityState: <span class="val">"${lastVis}"</span> → <span class="val">"${v}"</span>`);
-      lastVis = v;
-    }
-    if (f !== lastFocus) {
-      log('focus', 'POLL∆', `hasFocus: <span class="val">${lastFocus}</span> → <span class="${f?'good':'yellow'}">${f}</span>`);
-      lastFocus = f;
-    }
-    updateStats();
-  }, 500);
+    const h = document.hidden, v = document.visibilityState, f = document.hasFocus(), p = vid.paused;
+    if (h !== lastH) { addLog('visibility','POLL hidden', `<span class="${h?'bad':'good'}">${lastH}→${h}</span>`); lastH=h; }
+    if (v !== lastV) { addLog('visibility','POLL vis',    `<span class="val">${lastV}→${v}</span>`); lastV=v; }
+    if (f !== lastF) { addLog('focus','POLL focus',       `<span class="${f?'good':'val'}">${lastF}→${f}</span>`); lastF=f; }
 
-  // ── USER AGENT ──
-  document.getElementById('ua-display').textContent = navigator.userAgent;
-  const isTesla = /Tesla/i.test(navigator.userAgent);
-  log('info', 'INIT', `Browser détecté : <span class="val">${isTesla ? '✅ Tesla Browser' : '⚠ Non-Tesla'}</span>`);
-  log('info', 'INIT', `Page chargée — attente passage en Drive…`);
+    document.getElementById('sHidden').textContent = h;
+    document.getElementById('sHidden').className = 'value ' + (h?'red':'green');
+    document.getElementById('sVis').textContent = v;
+    document.getElementById('sVis').className = 'value ' + (v==='visible'?'green':'red');
+    document.getElementById('sFocus').textContent = f;
+    document.getElementById('sFocus').className = 'value ' + (f?'green':'yellow');
+    document.getElementById('sTime').textContent = vid.currentTime.toFixed(2)+'s';
+    updateVideoUI(p);
+  }, 300);
 
-  // ── HELPERS ──
-  function clearLog() { logEl.innerHTML = ''; allLogs = []; eventCount = 0; document.getElementById('s-count').textContent = '0'; }
-  function copyLog() {
-    const text = allLogs.map(e => `[${e.t}] [${e.label}] ${e.message.replace(/<[^>]+>/g,'')}`).join('\n');
-    navigator.clipboard.writeText(text).then(() => alert('Logs copiés !')).catch(() => alert('Copie manuelle nécessaire'));
-  }
-  function exportLog() {
-    const json = JSON.stringify({ ua: navigator.userAgent, logs: allLogs }, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'tesla-debug-' + Date.now() + '.json';
-    a.click();
+  function toggleRecover() {
+    autoRecover = !autoRecover;
+    const el = document.getElementById('recoverToggle');
+    el.className = 'recover-toggle' + (autoRecover ? '' : ' off');
+    el.innerHTML = `<div class="dot"></div> Reprise auto ${autoRecover?'ON':'OFF'}`;
+    addLog('info', 'CONFIG', `Reprise auto : <span class="${autoRecover?'good':'bad'}">${autoRecover}</span>`);
   }
 
-  updateStats();
+  function clearLog() { document.getElementById('log').innerHTML = ''; logs = []; }
+
+  addLog('info', 'INIT', `UA Tesla : <span class="${/Tesla/i.test(navigator.userAgent)?'good':'val'}">${/Tesla/i.test(navigator.userAgent)?'OUI':'NON'}</span>`);
+  addLog('info', 'INIT', 'Lance la vidéo → passe en Drive → observe');
 </script>
 </body>
 </html>
