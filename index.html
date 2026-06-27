@@ -40,7 +40,7 @@
 
     /* HOME GRID */
     #home main {
-      display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
+      display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
       gap: 14px; padding: 16px 0;
     }
     .tile {
@@ -61,6 +61,9 @@
     .tile-radio  { background: linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%); }
     .tile-twitch { background: linear-gradient(135deg, #4B0082 0%, #9146FF 100%); }
     .tile-plex   { background: linear-gradient(135deg, #B45309 0%, #F59E0B 100%); }
+    .tile-norway { background: linear-gradient(135deg, #003087 0%, #EF2B2D 100%); }
+    .tile-debug  { background: linear-gradient(135deg, #1a1a2e 0%, #2d2d2d 100%); border: 1px solid rgba(255,255,255,0.15) !important; }
+    .badge.test  { background: rgba(16,185,129,0.35); color: #10B981; }
     .tile-icon { font-size: 2.4rem; margin-bottom: 10px; line-height: 1; position: relative; z-index: 1; }
     .tile-name { font-size: 1.05rem; font-weight: 600; position: relative; z-index: 1; line-height: 1.2; }
     .tile-desc { font-size: 0.72rem; opacity: 0.75; margin-top: 3px; position: relative; z-index: 1; font-weight: 300; }
@@ -182,6 +185,19 @@
         <div class="tile-name">Ma bibliothèque</div>
         <div class="tile-desc">Films, séries &amp; perso</div>
       </div>
+
+      <div class="tile tile-norway" onclick="showPlayer('rkA0a3dtkkQ', 'Road Trip Norvège 2018')">
+        <div class="badge test">TEST</div>
+        <div class="tile-icon">🇳🇴</div>
+        <div class="tile-name">Road Trip Norvège</div>
+        <div class="tile-desc">Cap Nord 2018 · YouTube</div>
+      </div>
+
+      <div class="tile tile-debug" onclick="window.location.href='debug.html'">
+        <div class="tile-icon">🔧</div>
+        <div class="tile-name">Debug</div>
+        <div class="tile-desc">Diagnostic Tesla</div>
+      </div>
     </main>
   </div>
 
@@ -235,9 +251,15 @@
   tick(); setInterval(tick, 10000);
 
   // ── Screen switching ──
-  function showPlayer() {
+  function showPlayer(videoId, title) {
     document.getElementById('home').classList.remove('active');
     document.getElementById('player').classList.add('active');
+    if (videoId) {
+      const frame = document.getElementById('yt-frame');
+      frame.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+      document.getElementById('placeholder').style.display = 'none';
+      if (title) document.getElementById('yt-search').value = title;
+    }
   }
   function showHome() {
     document.getElementById('player').classList.remove('active');
